@@ -144,8 +144,23 @@ describe('CountriesService', () => {
       expect(result.rates['EUR']).toBe((0.9 / 1500).toFixed(6));
     });
 
-    it('should throw BadRequestException if no exchange rates found in cache', async () => {
+    it('should call updateExchangeRate and return rates if cache miss', async () => {
+      mockRedisService.getCachedItem
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(mockCachedData);
+
+      jest.spyOn(service, 'updateExchangeRate').mockResolvedValue(undefined);
+
+      const result: any = await service.getFxRates('USD');
+
+      expect(service.updateExchangeRate).toHaveBeenCalled();
+      expect(result.base).toBe('USD');
+      expect(result.rates).toEqual(mockRates);
+    });
+
+    it('should throw BadRequestException if cache remains empty after update', async () => {
       mockRedisService.getCachedItem.mockResolvedValue(null);
+      jest.spyOn(service, 'updateExchangeRate').mockResolvedValue(undefined);
 
       await expect(service.getFxRates('USD')).rejects.toThrow(
         BadRequestException,

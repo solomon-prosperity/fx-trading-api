@@ -1,11 +1,9 @@
-version: '3.0'
-
 services:
   api:
     build:
       context: .
       dockerfile: ./Dockerfile.dev
-    command: sh -c "yarn migrate && node dist/main.js"
+    command: sh -c "yarn migrate && yarn start:dev"
     ports:
       - '4000:3000'
     stdin_open: true

@@ -166,8 +166,13 @@ export class CountriesService {
 
   async getFxRates(base: string = 'USD'): Promise<object> {
     try {
-      const cachedDataStr =
+      let cachedDataStr =
         await this.redisService.getCachedItem('exchangeRates');
+      if (!cachedDataStr) {
+        await this.updateExchangeRate();
+        cachedDataStr = await this.redisService.getCachedItem('exchangeRates');
+      }
+
       if (!cachedDataStr)
         throw new BadRequestException('No exchange rates found');
 
