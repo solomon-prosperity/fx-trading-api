@@ -65,7 +65,7 @@ $ NODE_ENV=test yarn test:e2e
 ## Key Assumptions
 
 - **Email Verification**: Users are required to verify their email addresses before they can perform financial transactions (funding, converting, trading).
-- **Exchange Rates**: Exchange rates are fetched from an external API and cached/updated via a scheduled cron job (`EXCHANGE_RATE_CRON_SCHEDULE`).
+- **Exchange Rates**: Exchange rates are fetched from an external API and cached/updated via a scheduled cron job.
 - **Transaction Consistency**: All financial operations (funding, converting, trading) are wrapped in database transactions to ensure data integrity.
 - **Role-Based Access Control**: Fine-grained permissions are enforced for administrators using dedicated guards.
 - **Currency Denomination**: All currency amounts (inputs and outputs) are handled in their **lowest denomination** (e.g., kobo for NGN, cents for USD) to avoid floating-point inaccuracies.

@@ -4,12 +4,16 @@ import { ActivitiesServices } from './activities.service';
 import { GetOwnActivitiesDto } from './dto/get-own-activities.dto';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { User } from 'src/users/entities/user.entity';
+import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 
+@ApiTags('Activities')
+@ApiBearerAuth('access-token')
 @UseGuards(AuthGuard('jwt'))
 @Controller('/v1/activities')
 export class ActivityController {
   constructor(private readonly activitiesService: ActivitiesServices) {}
 
+  @ApiOperation({ summary: 'Get User Own Activities' })
   @Get()
   async findAll(
     @Query() query: GetOwnActivitiesDto,
