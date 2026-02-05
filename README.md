@@ -19,7 +19,7 @@ Comprehensive FX Trading API built with NestJS, providing functionalities for cu
 1. Clone the repository:
    ```bash
    git clone <https://github.com/solomon-prosperity/fx-trading-api.git>
-   cd fx_trading_api
+   cd fx-trading-api
    ```
 2. Install dependencies:
    ```bash
@@ -67,7 +67,7 @@ $ NODE_ENV=test yarn test:e2e
 - **Email Verification**: Users are required to verify their email addresses before they can perform financial transactions (funding, converting, trading).
 - **Exchange Rates**: Exchange rates are fetched from an external API and cached/updated via a scheduled cron job (`EXCHANGE_RATE_CRON_SCHEDULE`).
 - **Transaction Consistency**: All financial operations (funding, converting, trading) are wrapped in database transactions to ensure data integrity.
-- **Role-Based Access Control**: Fine-grained permissions are enforced for both administrators using dedicated guards.
+- **Role-Based Access Control**: Fine-grained permissions are enforced for administrators using dedicated guards.
 - **Currency Denomination**: All currency amounts (inputs and outputs) are handled in their **lowest denomination** (e.g., kobo for NGN, cents for USD) to avoid floating-point inaccuracies.
 
 ## API Documentation
