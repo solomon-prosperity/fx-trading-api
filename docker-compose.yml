@@ -1,0 +1,54 @@
+version: '3.0'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    ports:
+      - '4000:3000'
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/api
+    env_file:
+      - .env
+    environment:
+      - DB_TYPE=postgres
+      - DB_HOST=psql-db
+      - DB_USERNAME=fx_api_dev_database
+      - DB_PASSWORD=password
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_QUEUE_PREFIX=fx_api-api-dev
+      - RABBITMQ_VHOST=/
+      - RABBITMQ_TLS=false
+    depends_on:
+      - psql-db
+      - rabbitmq
+
+  psql-db:
+    image: postgres:16.0
+    restart: on-failure
+    environment:
+      POSTGRES_USER: 'fx_api_dev_database'
+      POSTGRES_PASSWORD: 'password'
+    volumes:
+      - fx_api_data:/var/lib/postgresql
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - '5672:5672'
+      - '15672:15672' # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+volumes:
+  fx_api_data:
+  rabbitmq_data:

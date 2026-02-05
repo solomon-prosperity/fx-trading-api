@@ -1,0 +1,11 @@
+{
+  "branchNameLinter": {
+    "prefixes": [],
+    "banned": ["wip", "WIP"],
+    "skip": ["skip-ci"],
+    "disallowed": ["master", "develop", "staging", "main", "qa", "development", "production"],
+    "regex": "^([A-Z]+-[0-9]+/)?([feat|hotfix|fix|chore|ci|perf|style|release|refactor|revert|docs|patch])([A-Z-a-z0-9-]){5,70}(-#[0-9]+)?$",
+    "msgDoesNotMatchRegex": "Branch \"%s\" must contain certain characters \"%s\".",
+    "seperator": "-"
+  }
+}

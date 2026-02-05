@@ -1,0 +1,4 @@
+{
+  "schema": "DEFAULT_FULL_SCHEMA",
+  "ignore": ["node_modules/*.yaml", "node_modules/*.yml"]
+}

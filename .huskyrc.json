@@ -1,0 +1,7 @@
+{
+  "hooks": {
+    "pre-commit": "npm run lint:staged",
+    "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+    "post-commit": "osascript -e 'display notification \"Code committed successfully!\" with title \"Husky\"'"
+  }
+}
