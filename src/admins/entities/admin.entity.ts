@@ -11,6 +11,8 @@ import {
 import * as bcrypt from 'bcrypt';
 import { Role } from '../../roles/entities/role.entity';
 import { Exclude } from 'class-transformer';
+import { UserStatus, Gender } from '../../users/enums/user.enum';
+import { PhoneNumber, AddressInfo } from '../../users/entities/user.entity';
 
 @Entity('admin_users')
 export class Admin {
@@ -26,36 +28,29 @@ export class Admin {
   @Column({ nullable: true })
   first_name: string;
 
-  @Exclude()
-  @Column({ nullable: true })
-  full_name: string;
-
   @Column({ nullable: true })
   last_name: string;
 
   @Column({ nullable: true })
   middle_name: string;
 
-  @Column({ nullable: true })
-  address?: string;
+  @Column(() => AddressInfo)
+  address?: AddressInfo;
 
-  @Column({ nullable: true })
-  country_code: string;
-
-  @Column({ nullable: true })
-  phone_number: string;
+  @Column(() => PhoneNumber)
+  phone_number?: PhoneNumber;
 
   @Column({
     type: 'enum',
-    enum: ['male', 'female', 'not_set'],
-    default: 'not_set',
+    enum: Gender,
+    nullable: true,
   })
   gender: string;
 
   @Column({
     type: 'enum',
-    enum: ['active', 'inactive', 'suspended', 'deleted'],
-    default: 'active',
+    enum: UserStatus,
+    default: UserStatus.INCOMPLETE_PROFILE,
   })
   status: string;
 
@@ -87,10 +82,6 @@ export class Admin {
   @Column({ type: 'bigint', nullable: true })
   reset_password_token_expires: number;
 
-  @Exclude()
-  @Column({ nullable: true })
-  jti: string;
-
   @Column({ default: false })
   is_default: boolean;
 
@@ -116,11 +107,5 @@ export class Admin {
       const salt = await bcrypt.genSalt(10);
       this.password = await bcrypt.hash(this.password, salt);
     }
-  }
-
-  @BeforeInsert()
-  set_default_values() {
-    this.status = this.status || 'active';
-    this.full_name = `${this.first_name} ${this.last_name}`;
   }
 }

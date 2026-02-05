@@ -33,5 +33,3 @@ RUN yarn build
 EXPOSE 3000
 
 CMD [ "node", "dist/main.js" ]
-
-# trigger build

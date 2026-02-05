@@ -13,15 +13,15 @@ import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
 import { UserStatus, Gender } from '../../users/enums/user.enum';
 
-class PhoneNumber {
-  @Column()
+export class PhoneNumber {
+  @Column({ nullable: true })
   country_code: string;
 
-  @Column()
+  @Column({ nullable: true })
   phone: string;
 }
 
-class AddressInfo {
+export class AddressInfo {
   @Column({ nullable: true })
   house_number: string;
 
@@ -29,7 +29,7 @@ class AddressInfo {
   street: string;
 
   @Column({ nullable: true })
-  landmark: string;
+  landmark?: string;
 
   @Column({ nullable: true })
   lga: string;
@@ -38,7 +38,10 @@ class AddressInfo {
   state: string;
 
   @Column({ nullable: true })
-  zip_code: string;
+  country: string;
+
+  @Column({ nullable: true })
+  zip_code?: string;
 }
 
 @Entity('users')
@@ -50,13 +53,10 @@ export class User {
   first_name: string;
 
   @Column()
-  full_name: string;
-
-  @Column()
   last_name: string;
 
   @Column({ nullable: true })
-  middle_name: string;
+  middle_name?: string;
 
   @Column(() => PhoneNumber)
   phone_number: PhoneNumber;
@@ -139,10 +139,5 @@ export class User {
       const salt = await bcrypt.genSalt(10);
       this.password = await bcrypt.hash(this.password, salt);
     }
-  }
-
-  @BeforeInsert()
-  set_default_values() {
-    this.full_name = `${this.first_name} ${this.last_name}`;
   }
 }

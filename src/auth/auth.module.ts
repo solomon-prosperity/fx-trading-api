@@ -7,7 +7,6 @@ import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
-// import { AdminJwtStrategy } from './admin.jwt.strategy';
 import { DatabaseModule } from 'src/database/database.module';
 import { User } from 'src/users/entities/user.entity';
 import { Wallet } from 'src/wallets/entities/wallet.entity';

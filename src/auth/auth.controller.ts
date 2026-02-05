@@ -79,8 +79,12 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async confirmation_token(
     @Param('confirmation_token') confirmation_token: string,
+    @Request() request: ExpressRequest,
   ) {
-    const response = await this.authService.verifyEmail(confirmation_token);
+    const response = await this.authService.verifyEmail(
+      confirmation_token,
+      request,
+    );
     return {
       response: instanceToPlain(response),
       message: 'User email address has been verified successfully!',

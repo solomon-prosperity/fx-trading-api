@@ -8,6 +8,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { PhoneNumberDto } from 'src/auth/dto/phone-number-dto';
+import { AddressDto } from 'src/auth/dto/address.dto';
 import { Gender } from '../enums/user.enum';
 
 export class UpdateProfileDto {
@@ -30,14 +31,19 @@ export class UpdateProfileDto {
   middle_name?: string;
 
   @ApiProperty({ description: 'Phone Number of User', type: PhoneNumberDto })
+  @IsOptional()
   @ValidateNested()
   @Type(() => PhoneNumberDto)
-  @IsNotEmpty()
-  @IsOptional()
   phone_number?: PhoneNumberDto;
 
   @ApiProperty({ description: 'Gender of User', enum: Gender })
   @IsEnum(Gender)
   @IsOptional()
   gender?: Gender;
+
+  @ApiProperty({ description: 'Address of User', type: AddressDto })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => AddressDto)
+  address_info?: AddressDto;
 }

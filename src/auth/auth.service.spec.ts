@@ -146,6 +146,11 @@ describe('AuthService', () => {
   });
 
   describe('verifyEmail', () => {
+    const mockRequest = {
+      ip: '127.0.0.1',
+      headers: {},
+      socket: { remoteAddress: '127.0.0.1' },
+    } as any;
     it('should successfully verify email', async () => {
       const token = 'token_123';
       const mockUser = {
@@ -160,7 +165,7 @@ describe('AuthService', () => {
         status: UserStatus.ACTIVE,
       });
 
-      const result = await service.verifyEmail(token);
+      const result = await service.verifyEmail(token, mockRequest);
 
       expect(result.user.is_email_verified).toBe(true);
       expect(result).toHaveProperty('token');
@@ -168,7 +173,7 @@ describe('AuthService', () => {
 
     it('should throw NotFoundException for invalid token', async () => {
       mockUsersService.findOne.mockResolvedValue(null);
-      await expect(service.verifyEmail('invalid')).rejects.toThrow(
+      await expect(service.verifyEmail('invalid', mockRequest)).rejects.toThrow(
         NotFoundException,
       );
     });

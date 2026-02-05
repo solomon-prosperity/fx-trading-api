@@ -9,7 +9,7 @@ Comprehensive FX Trading API built with NestJS, providing functionalities for cu
 ### Prerequisites
 
 - Node.js (v18 or higher)
-- Yarn or NPM
+- Yarn
 - PostgreSQL
 - RabbitMQ
 - Redis
@@ -29,6 +29,11 @@ Comprehensive FX Trading API built with NestJS, providing functionalities for cu
 
    - Copy `.env.template` to `.env`.
    - Fill in the required environment variables (Database, RabbitMQ, Redis, JWT, Zeptomail, and Currency API details).
+   - **Email Configuration**: Ensure you configure the following Zeptomail template IDs in your `.env` file. If not provided, the application will fallback to hardcoded defaults (which may not work for your account).
+     - `ZEPTOMAIL_TEMPLATE_ADMIN_INVITE`: Template for inviting admins.
+       - **Variables**: `complete_invite_url`, `role_name`
+     - `ZEPTOMAIL_TEMPLATE_EMAIL_VERIFICATION`: Template for user email verification and OTPs.
+       - **Variables**: `name`, `otp`
 
 4. Database Setup:
 
@@ -47,6 +52,9 @@ $ yarn start:dev
 
 # production mode
 $ yarn start:prod
+
+# docker
+$ docker-compose up --build
 ```
 
 ### Running Tests
@@ -86,6 +94,7 @@ The API documentation is automatically generated using Swagger. Once the applica
 - **Caching**: [Redis](https://redis.io/) is integrated for caching frequently accessed data and optimizing overall performance.
 - **Global Pipes and Filters**: Standardized validation and error handling are implemented via global pipes and an all-exceptions filter, providing a consistent API interface.
 - **Response Transformation**: An interceptor is used to normalize API responses, ensuring a uniform data structure for the frontend.
+- **Currency Data**: [CurrencyAPI](https://currencyapi.com/) is used as the external provider for real-time exchange rates.
 
 ## Core Process Flows
 

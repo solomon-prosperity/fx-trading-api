@@ -9,6 +9,7 @@ import { Country } from 'src/countries/entities/country.entity';
 import { countriesList } from 'src/countries/constants/countries.constant';
 import { defaultPermissions } from 'src/seeder/constants/permissions.constants';
 import { CountriesService } from 'src/countries/countries.service';
+import { UserStatus } from 'src/users/enums/user.enum';
 
 @Injectable()
 export class SeederService implements OnApplicationBootstrap {
@@ -25,7 +26,7 @@ export class SeederService implements OnApplicationBootstrap {
     try {
       await this.seed();
     } catch (error) {
-      console.error(
+      this.logger.error(
         'Seeding failed. Application will not start:',
         error.message,
       );
@@ -78,9 +79,19 @@ export class SeederService implements OnApplicationBootstrap {
           first_name: 'FX',
           last_name: 'Admin',
           email,
-          country_code: '+234',
-          phone_number: '1234567890',
+          phone_number: {
+            country_code: '+234',
+            phone: '1234567890',
+          },
+          address: {
+            house_number: '123',
+            street: 'Street',
+            lga: 'LGA',
+            state: 'State',
+            country: 'Country',
+          },
           gender: 'male',
+          status: UserStatus.ACTIVE,
           is_email_verified: true,
           is_default: true,
           role_id: role.role_id,
@@ -88,9 +99,9 @@ export class SeederService implements OnApplicationBootstrap {
         });
 
         await manager.save(admin);
-        console.log('Admin user created successfully.');
+        this.logger.log('Admin user created successfully.');
       } else {
-        console.log('Admin user already exists.');
+        this.logger.log('Admin user already exists.');
       }
     } catch (error) {
       throw error;

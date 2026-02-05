@@ -6,10 +6,14 @@ import {
   IsNotEmpty,
   MinLength,
   MaxLength,
+  ValidateNested,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Match } from '../../common/decorators/match.decorator';
 import { Gender } from '../../users/enums/user.enum';
+import { PhoneNumberDto } from 'src/auth/dto/phone-number-dto';
+import { AddressDto } from 'src/auth/dto/address.dto';
+import { Type } from 'class-transformer';
 
 export class CompleteAdminSignupDto {
   @ApiProperty({
@@ -34,15 +38,17 @@ export class CompleteAdminSignupDto {
   @IsString()
   middle_name?: string;
 
-  @ApiProperty({ description: 'Country code for phone number', example: '+1' })
-  @IsString()
-  @IsNotEmpty()
-  country_code: string;
+  @ApiProperty({ description: 'Phone Number of Admin', type: PhoneNumberDto })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => PhoneNumberDto)
+  phone_number?: PhoneNumberDto;
 
-  @ApiProperty({ description: 'Phone number', example: '123456789' })
-  @IsString()
-  @IsNotEmpty()
-  phone_number: string;
+  @ApiProperty({ description: 'Address of Admin', type: AddressDto })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => AddressDto)
+  address?: AddressDto;
 
   @ApiPropertyOptional({
     description: 'Admin gender',
@@ -55,7 +61,7 @@ export class CompleteAdminSignupDto {
   gender?: string;
 
   @ApiProperty({
-    description: 'User password',
+    description: 'Admin password',
     example: 'Password123##',
     minLength: 8,
     maxLength: 20,
@@ -66,7 +72,7 @@ export class CompleteAdminSignupDto {
   password: string;
 
   @ApiProperty({
-    description: 'Password confirmation',
+    description: 'Admin password confirmation',
     example: 'Password123##',
   })
   @IsString()

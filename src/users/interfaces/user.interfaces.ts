@@ -8,11 +8,11 @@ interface PhoneNumber {
 export interface Address {
   house_number: string;
   street: string;
-  landmark: string;
+  landmark?: string;
   lga: string;
   state: string;
+  country: string;
   zip_code?: string;
-  proof_of_address?: string;
   is_address_verified?: boolean;
 }
 

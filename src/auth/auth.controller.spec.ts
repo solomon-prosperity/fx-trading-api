@@ -106,11 +106,15 @@ describe('AuthController', () => {
   describe('confirmation_token', () => {
     it('should successfully verify email token', async () => {
       const token = 'valid_token';
+      const mockRequest = {} as any;
       mockAuthService.verifyEmail.mockResolvedValue({ user_id: '123' });
 
-      const result = await controller.confirmation_token(token);
+      const result = await controller.confirmation_token(token, mockRequest);
 
-      expect(mockAuthService.verifyEmail).toHaveBeenCalledWith(token);
+      expect(mockAuthService.verifyEmail).toHaveBeenCalledWith(
+        token,
+        mockRequest,
+      );
       expect(result.message).toBe(
         'User email address has been verified successfully!',
       );

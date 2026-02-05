@@ -60,6 +60,9 @@ export class AuthService {
                   recipient: email,
                   subject: 'Welcome to the FX Trading API!',
                   template_id:
+                    this.configService.get(
+                      'ZEPTOMAIL_TEMPLATE_EMAIL_VERIFICATION',
+                    ) ||
                     '2d6f.25986f17b20ef1dd.k1.fa1fd4a0-0208-11f1-8688-fae9afc80e45.19c2a5d8eea',
                   template_variables: { name: new_user.first_name, otp },
                   cc: null,
@@ -234,6 +237,9 @@ export class AuthService {
                 recipient: email,
                 subject: 'Confirm your email',
                 template_id:
+                  this.configService.get(
+                    'ZEPTOMAIL_TEMPLATE_EMAIL_VERIFICATION',
+                  ) ||
                   '2d6f.25986f17b20ef1dd.k1.fa1fd4a0-0208-11f1-8688-fae9afc80e45.19c2a5d8eea',
                 template_variables: { name: user.first_name, otp },
                 cc: null,
@@ -251,7 +257,7 @@ export class AuthService {
     }
   }
 
-  async verifyEmail(confirmation_token: string) {
+  async verifyEmail(confirmation_token: string, request: Request) {
     try {
       const response = await this.dataSource.transaction(async (manager) => {
         const user = await this.usersService.findOne({
@@ -286,6 +292,13 @@ export class AuthService {
           },
           manager,
         );
+        const request_meta = {
+          ip:
+            request.ip ||
+            request.headers['x-forwarded-for'] ||
+            request.socket.remoteAddress,
+          user_agent: request.headers['user-agent'],
+        };
         await this.rabitmqService.publishMessage([
           {
             worker: 'activity',
@@ -299,6 +312,7 @@ export class AuthService {
                 resource: 'Auth',
                 event: 'Verify',
                 event_date: new Date(),
+                request: request_meta,
               },
             },
           },

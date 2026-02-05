@@ -19,13 +19,13 @@ import { InviteAdminDto } from './dto/invite-admin.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { Admin } from './entities/admin.entity';
 import { Role } from 'src/roles/entities/role.entity';
-import { generateRandomString, sanitizeString } from '../common/helpers';
 import { RabbitmqService } from '../rabbitmq/rabbitmq.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { paginateResult } from '../common/helpers';
 import { FindManyInterface } from 'src/common/utils/interfaces';
 import { GetAdminsDto } from './dto/get-admins-dto';
+import { UserStatus } from 'src/users/enums/user.enum';
 
 @Injectable()
 export class AdminsService {
@@ -58,7 +58,7 @@ export class AdminsService {
             this.adminRepository.create({
               email,
               role_id,
-              status: 'inactive',
+              status: UserStatus.INCOMPLETE_PROFILE,
             }),
           );
           const complete_invite_url = `${this.configService.get(
@@ -74,6 +74,7 @@ export class AdminsService {
                   recipient: email,
                   subject: 'Welcome FX Trading API Admin!',
                   template_id:
+                    this.configService.get('ZEPTOMAIL_TEMPLATE_ADMIN_INVITE') ||
                     '2d6f.25986f17b20ef1dd.k1.3c4b0890-0222-11f1-8688-fae9afc80e45.19c2b031799',
                   template_variables: {
                     complete_invite_url,
@@ -99,18 +100,11 @@ export class AdminsService {
   async completeSignup(payload: CompleteAdminSignupDto) {
     try {
       const response = await this.dataSource.transaction(async (manager) => {
-        const {
-          first_name,
-          last_name,
-          phone_number,
-          country_code,
-          gender,
-          email,
-          password,
-        } = payload;
+        const { first_name, last_name, phone_number, gender, email, password } =
+          payload;
         const admin_exists = await this.adminRepository.findOneBy({
           email,
-          status: 'inactive',
+          status: UserStatus.INCOMPLETE_PROFILE,
         });
         if (!admin_exists)
           throw new ForbiddenException(
@@ -137,13 +131,12 @@ export class AdminsService {
           {
             first_name,
             last_name,
-            phone_number: sanitizeString(phone_number),
-            country_code,
+            phone_number,
             gender,
             email,
             is_email_verified: true,
             is_default: false,
-            status: 'active',
+            status: UserStatus.ACTIVE,
             password: await bcrypt.hash(password, salt),
             login_attempts: 0,
             login_times,
@@ -187,7 +180,6 @@ export class AdminsService {
       throw error;
     }
   }
-
 
   async changePassword(
     admin_id: string,

@@ -1,6 +1,10 @@
 import { IsString, IsEnum, IsOptional, IsUrl } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Gender } from '../../users/enums/user.enum';
+import { PhoneNumberDto } from 'src/auth/dto/phone-number-dto';
+import { AddressDto } from 'src/auth/dto/address.dto';
+import { Type } from 'class-transformer';
+import { ValidateNested } from 'class-validator';
 
 export class UpdateProfileDto {
   @ApiProperty({ description: 'Admin first name', example: 'John' })
@@ -20,18 +24,15 @@ export class UpdateProfileDto {
 
   @ApiPropertyOptional({ description: 'Admin Address' })
   @IsOptional()
-  @IsString()
-  address?: string;
+  @ValidateNested()
+  @Type(() => AddressDto)
+  address?: AddressDto;
 
-  @ApiProperty({ description: 'Country code for phone number', example: '+1' })
+  @ApiProperty({ description: 'Phone Number of User', type: PhoneNumberDto })
   @IsOptional()
-  @IsString()
-  country_code?: string;
-
-  @ApiProperty({ description: 'Phone number', example: '123456789' })
-  @IsOptional()
-  @IsString()
-  phone_number?: string;
+  @ValidateNested()
+  @Type(() => PhoneNumberDto)
+  phone_number?: PhoneNumberDto;
 
   @ApiPropertyOptional({
     description: 'Admin gender',
