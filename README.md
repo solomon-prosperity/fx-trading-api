@@ -18,7 +18,7 @@ Comprehensive FX Trading API built with NestJS, providing functionalities for cu
 
 1. Clone the repository:
    ```bash
-   git clone <https://github.com/solomon-prosperity/fx-trading-api.git>
+   git clone https://github.com/solomon-prosperity/fx-trading-api.git
    cd fx-trading-api
    ```
 2. Install dependencies:
